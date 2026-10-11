@@ -1,3 +1,5 @@
+import type { PortableTextBlock } from "next-sanity";
+
 export type SanityImage = {
   asset: { _ref: string };
   alt?: string;
@@ -23,8 +25,15 @@ export type ProductSummary = {
   category?: { title: string; slug: string };
 };
 
+export type DetailImage = SanityImage & {
+  _type: "image";
+  _key: string;
+  caption?: string;
+};
+
 export type Product = ProductSummary & {
   description?: string;
+  details?: (PortableTextBlock | DetailImage)[];
   images?: SanityImage[];
   dimensions?: string;
   madeBy?: string;

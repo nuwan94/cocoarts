@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Image } from "next-sanity/image";
 import { Suspense } from "react";
 
+import { RichText } from "@/components/RichText";
 import { formatPrice, whatsappOrderUrl } from "@/lib/format";
 import { urlFor } from "@/sanity/image";
 import { getProduct, getProducts } from "@/sanity/queries";
@@ -126,6 +127,11 @@ async function ProductDetails({ params }: Pick<Props, "params">) {
           )}
         </div>
       </div>
+      {product.details && product.details.length > 0 && (
+        <section className="mt-20 md:col-span-2">
+          <RichText value={product.details} />
+        </section>
+      )}
     </div>
   );
 }

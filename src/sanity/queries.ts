@@ -22,7 +22,7 @@ const featuredProductsQuery = `*[_type == "product" && featured == true && defin
 
 const productsByCategoryQuery = `*[_type == "product" && category->slug.current == $slug && defined(slug.current)] | order(_createdAt desc) { ${productSummary} }`;
 
-const productQuery = `*[_type == "product" && slug.current == $slug][0] { ${productSummary}, description, images, dimensions, madeBy }`;
+const productQuery = `*[_type == "product" && slug.current == $slug][0] { ${productSummary}, description, details, images, dimensions, madeBy }`;
 
 const categoriesQuery = `*[_type == "category" && defined(slug.current)] | order(title asc) { ${categoryFields} }`;
 

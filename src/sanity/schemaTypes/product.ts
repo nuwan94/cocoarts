@@ -41,7 +41,66 @@ export const product = defineType({
       type: "reference",
       to: [{ type: "category" }],
     }),
-    defineField({ name: "description", type: "text", rows: 5 }),
+    defineField({
+      name: "description",
+      title: "Short description",
+      type: "text",
+      rows: 3,
+      description: "One or two sentences shown next to the price.",
+    }),
+    defineField({
+      name: "details",
+      title: "Detailed description",
+      type: "array",
+      description:
+        "The full story: how it's made, materials, care instructions. Supports headings, lists, links, quotes and photos.",
+      of: [
+        defineArrayMember({
+          type: "block",
+          styles: [
+            { title: "Paragraph", value: "normal" },
+            { title: "Heading", value: "h2" },
+            { title: "Subheading", value: "h3" },
+            { title: "Quote", value: "blockquote" },
+          ],
+          lists: [
+            { title: "Bulleted list", value: "bullet" },
+            { title: "Numbered list", value: "number" },
+          ],
+          marks: {
+            decorators: [
+              { title: "Bold", value: "strong" },
+              { title: "Italic", value: "em" },
+              { title: "Underline", value: "underline" },
+            ],
+            annotations: [
+              {
+                name: "link",
+                title: "Link",
+                type: "object",
+                fields: [
+                  defineField({
+                    name: "href",
+                    title: "URL",
+                    type: "url",
+                    validation: (rule) =>
+                      rule.uri({ scheme: ["http", "https", "mailto", "tel"] }),
+                  }),
+                ],
+              },
+            ],
+          },
+        }),
+        defineArrayMember({
+          type: "image",
+          options: { hotspot: true },
+          fields: [
+            defineField({ name: "alt", title: "Alt text", type: "string" }),
+            defineField({ name: "caption", type: "string" }),
+          ],
+        }),
+      ],
+    }),
     defineField({
       name: "dimensions",
       type: "string",
