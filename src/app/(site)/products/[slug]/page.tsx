@@ -5,7 +5,9 @@ import { Image } from "next-sanity/image";
 import { Suspense } from "react";
 
 import { RichText } from "@/components/RichText";
-import { formatPrice, whatsappOrderUrl } from "@/lib/format";
+import { currency, formatPrice, whatsappOrderUrl } from "@/lib/format";
+import { absoluteUrl, baseOpenGraph, siteName } from "@/lib/site";
+import type { Product } from "@/sanity/types";
 import { urlFor } from "@/sanity/image";
 import { getProduct, getProducts } from "@/sanity/queries";
 
@@ -21,7 +23,67 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await getProduct(slug);
-  return { title: product?.name, description: product?.description };
+  if (!product) return {};
+  const url = absoluteUrl(`/products/${product.slug}`);
+  const description = productDescription(product);
+  return {
+    title: product.name,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      ...baseOpenGraph,
+      url,
+      title: product.name,
+      description,
+      images: product.image && [
+        {
+          url: urlFor(product.image).width(1200).height(630).url(),
+          width: 1200,
+          height: 630,
+          alt: product.image.alt || product.name,
+        },
+      ],
+    },
+  };
+}
+
+function productDescription(product: Product) {
+  return (
+    product.description ||
+    `${product.name}, handmade from coconut shell by Sri Lankan artisans.`
+  );
+}
+
+// Structured data so search engines can show price and availability.
+function ProductJsonLd({ product }: { product: Product }) {
+  const data = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    description: productDescription(product),
+    image: (product.images ?? []).map((image) =>
+      urlFor(image).width(1200).url(),
+    ),
+    category: product.category?.title,
+    brand: { "@type": "Brand", name: siteName },
+    offers: {
+      "@type": "Offer",
+      url: absoluteUrl(`/products/${product.slug}`),
+      price: product.price,
+      priceCurrency: currency,
+      availability: product.inStock
+        ? "https://schema.org/InStock"
+        : "https://schema.org/OutOfStock",
+    },
+  };
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify(data).replace(/</g, "\\u003c"),
+      }}
+    />
+  );
 }
 
 async function ProductDetails({ params }: Pick<Props, "params">) {
@@ -34,6 +96,7 @@ async function ProductDetails({ params }: Pick<Props, "params">) {
 
   return (
     <div className="grid items-center gap-12 md:grid-cols-2">
+      <ProductJsonLd product={product} />
       <div>
         <div
           className={`aspect-square overflow-hidden bg-husk/30 ${photoShape}`}

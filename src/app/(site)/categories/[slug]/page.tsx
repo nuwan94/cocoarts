@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { ProductGrid } from "@/components/ProductGrid";
+import { absoluteUrl, baseOpenGraph } from "@/lib/site";
 import {
   getCategories,
   getCategory,
@@ -19,7 +20,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const category = await getCategory(slug);
-  return { title: category?.title, description: category?.description };
+  if (!category) return {};
+  const url = absoluteUrl(`/categories/${category.slug}`);
+  const description =
+    category.description ||
+    `Handmade coconut shell ${category.title.toLowerCase()} from CocoArts.`;
+  return {
+    title: category.title,
+    description,
+    alternates: { canonical: url },
+    openGraph: { ...baseOpenGraph, url, title: category.title, description },
+  };
 }
 
 async function CategoryProducts({ params }: Pick<Props, "params">) {

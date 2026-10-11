@@ -69,7 +69,11 @@ const components: PortableTextComponents = {
   },
 };
 
-export function RichText({ value }: { value: NonNullable<Product["details"]> }) {
+export function RichText({
+  value,
+}: {
+  value: NonNullable<Product["details"]>;
+}) {
   return (
     <div className="max-w-2xl [&>*:first-child]:mt-0">
       <PortableText value={value} components={components} />

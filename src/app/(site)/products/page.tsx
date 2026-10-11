@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
 
 import { ProductGrid } from "@/components/ProductGrid";
+import { absoluteUrl, baseOpenGraph } from "@/lib/site";
 import { getProducts } from "@/sanity/queries";
 
-export const metadata: Metadata = { title: "Shop" };
+export const metadata: Metadata = {
+  title: "Shop all coconut shell crafts",
+  description:
+    "Browse every handmade coconut shell piece in the CocoArts collection and order directly over WhatsApp.",
+  alternates: { canonical: absoluteUrl("/products") },
+  openGraph: { ...baseOpenGraph, url: absoluteUrl("/products") },
+};
 
 export default async function ProductsPage() {
   const products = await getProducts();

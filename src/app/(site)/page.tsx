@@ -1,22 +1,47 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CoconutFrame } from "@/components/CoconutFrame";
 import { PalaPeti } from "@/components/Motifs";
 import { ProductGrid } from "@/components/ProductGrid";
+import { absoluteUrl, baseOpenGraph } from "@/lib/site";
+import { urlFor } from "@/sanity/image";
 import {
   getCategories,
   getFeaturedProducts,
   getProducts,
 } from "@/sanity/queries";
 
+// Until something is marked as featured, show the newest products instead.
+async function getShowcase() {
+  const featured = await getFeaturedProducts();
+  if (featured.length > 0) return { products: featured, isFeatured: true };
+  return { products: (await getProducts()).slice(0, 8), isFeatured: false };
+}
+
+export async function generateMetadata(): Promise<Metadata> {
+  const image = (await getShowcase()).products[0]?.image;
+  return {
+    alternates: { canonical: absoluteUrl("/") },
+    openGraph: {
+      ...baseOpenGraph,
+      url: absoluteUrl("/"),
+      images: image && [
+        {
+          url: urlFor(image).width(1200).height(630).url(),
+          width: 1200,
+          height: 630,
+        },
+      ],
+    },
+  };
+}
+
 export default async function HomePage() {
-  const [featured, categories] = await Promise.all([
-    getFeaturedProducts(),
+  const [{ products, isFeatured }, categories] = await Promise.all([
+    getShowcase(),
     getCategories(),
   ]);
-  // Until something is marked as featured, show the newest products instead.
-  const products =
-    featured.length > 0 ? featured : (await getProducts()).slice(0, 8);
   const hero = products[0];
 
   return (
@@ -60,7 +85,7 @@ export default async function HomePage() {
 
       <section className="wrap pt-20 md:pt-40">
         <h2 className="mb-10 font-display text-4xl sm:text-5xl">
-          {featured.length > 0 ? "Featured pieces" : "Fresh off the bench"}
+          {isFeatured ? "Featured pieces" : "Fresh off the bench"}
         </h2>
         <ProductGrid products={products} />
       </section>

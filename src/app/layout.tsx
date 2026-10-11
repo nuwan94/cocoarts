@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Caprasimo, Instrument_Sans } from "next/font/google";
 import "./globals.css";
+
+import { baseOpenGraph, siteDescription, siteName, siteUrl } from "@/lib/site";
 
 const body = Instrument_Sans({
   variable: "--font-body",
@@ -14,9 +16,30 @@ const carved = Caprasimo({
 });
 
 export const metadata: Metadata = {
-  title: { default: "CocoArts", template: "%s | CocoArts" },
-  description: "Handmade art and craft from coconut shell.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: `${siteName} | Coconut shell art and craft from Sri Lanka`,
+    template: `%s | ${siteName}`,
+  },
+  description: siteDescription,
+  applicationName: siteName,
+  keywords: [
+    "coconut shell craft",
+    "coconut shell art",
+    "Sri Lankan handicrafts",
+    "handmade gifts",
+    "eco-friendly decor",
+  ],
+  openGraph: {
+    ...baseOpenGraph,
+    title: `${siteName} | Coconut shell art and craft from Sri Lanka`,
+    description: siteDescription,
+  },
+  twitter: { card: "summary_large_image" },
+  robots: { index: true, follow: true },
 };
+
+export const viewport: Viewport = { themeColor: "#173d2c" };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (

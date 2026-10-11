@@ -1,4 +1,4 @@
-const currency = process.env.NEXT_PUBLIC_CURRENCY || "LKR";
+export const currency = process.env.NEXT_PUBLIC_CURRENCY || "LKR";
 const whatsappNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "";
 
 export function formatPrice(amount: number) {
