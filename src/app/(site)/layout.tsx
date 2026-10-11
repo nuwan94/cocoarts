@@ -12,12 +12,18 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
           <Link href="/" className="font-display text-3xl">
             CocoArts
           </Link>
-          <nav className="flex gap-6 font-medium">
+          <nav className="flex gap-4 font-medium sm:gap-6">
             <Link
               href="/products"
               className="decoration-thambili decoration-wavy underline-offset-8 hover:underline"
             >
               Shop
+            </Link>
+            <Link
+              href="/artists"
+              className="decoration-thambili decoration-wavy underline-offset-8 hover:underline"
+            >
+              Artists
             </Link>
             <Link
               href="/#categories"

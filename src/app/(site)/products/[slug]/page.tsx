@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { RichText } from "@/components/RichText";
 import { currency, formatPrice, whatsappOrderUrl } from "@/lib/format";
 import { absoluteUrl, baseOpenGraph, siteName } from "@/lib/site";
+import { staticSlugs } from "@/lib/static-params";
 import type { Product } from "@/sanity/types";
 import { urlFor } from "@/sanity/image";
 import { getProduct, getProducts } from "@/sanity/queries";
@@ -16,8 +17,7 @@ type Props = PageProps<"/products/[slug]">;
 const photoShape = "rounded-[46%_54%_42%_58%/52%_44%_56%_48%]";
 
 export async function generateStaticParams() {
-  const products = await getProducts();
-  return products.map((product) => ({ slug: product.slug }));
+  return staticSlugs(await getProducts());
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -163,11 +163,26 @@ async function ProductDetails({ params }: Pick<Props, "params">) {
               <dd>{product.dimensions}</dd>
             </div>
           )}
-          {product.madeBy && (
+          {product.artist ? (
             <div className="flex gap-2">
               <dt className="text-bark">Made by</dt>
-              <dd>{product.madeBy}</dd>
+              <dd>
+                <Link
+                  href={`/artists/${product.artist.slug}`}
+                  className="font-medium underline decoration-thambili decoration-wavy underline-offset-4"
+                >
+                  {product.artist.name}
+                </Link>
+                {product.artist.location && `, ${product.artist.location}`}
+              </dd>
             </div>
+          ) : (
+            product.madeBy && (
+              <div className="flex gap-2">
+                <dt className="text-bark">Made by</dt>
+                <dd>{product.madeBy}</dd>
+              </div>
+            )
           )}
         </dl>
 

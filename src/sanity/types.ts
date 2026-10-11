@@ -31,9 +31,23 @@ export type DetailImage = SanityImage & {
   caption?: string;
 };
 
+export type RichTextValue = (PortableTextBlock | DetailImage)[];
+
+export type ArtistSummary = {
+  _id: string;
+  name: string;
+  slug: string;
+  location?: string;
+  intro?: string;
+  photo?: SanityImage;
+};
+
+export type Artist = ArtistSummary & { story?: RichTextValue };
+
 export type Product = ProductSummary & {
   description?: string;
-  details?: (PortableTextBlock | DetailImage)[];
+  details?: RichTextValue;
+  artist?: Pick<ArtistSummary, "name" | "slug" | "location" | "photo">;
   images?: SanityImage[];
   dimensions?: string;
   madeBy?: string;

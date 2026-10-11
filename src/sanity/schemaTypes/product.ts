@@ -1,5 +1,7 @@
 import { defineArrayMember, defineField, defineType } from "sanity";
 
+import { richTextMembers } from "./richText";
+
 export const product = defineType({
   name: "product",
   title: "Product",
@@ -54,52 +56,7 @@ export const product = defineType({
       type: "array",
       description:
         "The full story: how it's made, materials, care instructions. Supports headings, lists, links, quotes and photos.",
-      of: [
-        defineArrayMember({
-          type: "block",
-          styles: [
-            { title: "Paragraph", value: "normal" },
-            { title: "Heading", value: "h2" },
-            { title: "Subheading", value: "h3" },
-            { title: "Quote", value: "blockquote" },
-          ],
-          lists: [
-            { title: "Bulleted list", value: "bullet" },
-            { title: "Numbered list", value: "number" },
-          ],
-          marks: {
-            decorators: [
-              { title: "Bold", value: "strong" },
-              { title: "Italic", value: "em" },
-              { title: "Underline", value: "underline" },
-            ],
-            annotations: [
-              {
-                name: "link",
-                title: "Link",
-                type: "object",
-                fields: [
-                  defineField({
-                    name: "href",
-                    title: "URL",
-                    type: "url",
-                    validation: (rule) =>
-                      rule.uri({ scheme: ["http", "https", "mailto", "tel"] }),
-                  }),
-                ],
-              },
-            ],
-          },
-        }),
-        defineArrayMember({
-          type: "image",
-          options: { hotspot: true },
-          fields: [
-            defineField({ name: "alt", title: "Alt text", type: "string" }),
-            defineField({ name: "caption", type: "string" }),
-          ],
-        }),
-      ],
+      of: richTextMembers,
     }),
     defineField({
       name: "dimensions",
@@ -107,10 +64,18 @@ export const product = defineType({
       description: "e.g. 12 cm × 8 cm",
     }),
     defineField({
-      name: "madeBy",
+      name: "artist",
       title: "Made by",
+      type: "reference",
+      to: [{ type: "artist" }],
+      description: "Links the product to the artist's page.",
+    }),
+    defineField({
+      name: "madeBy",
+      title: "Made by (old text field)",
       type: "string",
-      description: "Artisan or workshop name (optional)",
+      deprecated: { reason: "Pick an artist in the field above instead." },
+      hidden: ({ value }) => !value,
     }),
     defineField({
       name: "inStock",

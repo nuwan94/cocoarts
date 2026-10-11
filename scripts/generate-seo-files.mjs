@@ -16,7 +16,8 @@ if (!siteUrl || !projectId) {
 
 const query = `{
   "products": *[_type == "product" && defined(slug.current)]{ "slug": slug.current, _updatedAt },
-  "categories": *[_type == "category" && defined(slug.current)]{ "slug": slug.current, _updatedAt }
+  "categories": *[_type == "category" && defined(slug.current)]{ "slug": slug.current, _updatedAt },
+  "artists": *[_type == "artist" && defined(slug.current)]{ "slug": slug.current, _updatedAt }
 }`;
 const response = await fetch(
   `https://${projectId}.apicdn.sanity.io/v2025-01-01/data/query/${dataset}?query=${encodeURIComponent(query)}`,
@@ -30,6 +31,11 @@ const { result } = await response.json();
 const pages = [
   { path: "/" },
   { path: "/products/" },
+  { path: "/artists/" },
+  ...result.artists.map((artist) => ({
+    path: `/artists/${artist.slug}/`,
+    lastmod: artist._updatedAt,
+  })),
   ...result.categories.map((category) => ({
     path: `/categories/${category.slug}/`,
     lastmod: category._updatedAt,

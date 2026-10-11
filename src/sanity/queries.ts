@@ -2,7 +2,13 @@ import { cacheLife, cacheTag } from "next/cache";
 
 import { client } from "./client";
 import { isSanityConfigured } from "./env";
-import type { Category, Product, ProductSummary } from "./types";
+import type {
+  Artist,
+  ArtistSummary,
+  Category,
+  Product,
+  ProductSummary,
+} from "./types";
 
 const productSummary = `
   _id,
@@ -22,7 +28,15 @@ const featuredProductsQuery = `*[_type == "product" && featured == true && defin
 
 const productsByCategoryQuery = `*[_type == "product" && category->slug.current == $slug && defined(slug.current)] | order(_createdAt desc) { ${productSummary} }`;
 
-const productQuery = `*[_type == "product" && slug.current == $slug][0] { ${productSummary}, description, details, images, dimensions, madeBy }`;
+const productQuery = `*[_type == "product" && slug.current == $slug][0] { ${productSummary}, description, details, images, dimensions, madeBy, artist->{ name, "slug": slug.current, location, photo } }`;
+
+const productsByArtistQuery = `*[_type == "product" && artist->slug.current == $slug && defined(slug.current)] | order(_createdAt desc) { ${productSummary} }`;
+
+const artistSummary = `_id, name, "slug": slug.current, location, intro, photo`;
+
+const artistsQuery = `*[_type == "artist" && defined(slug.current)] | order(name asc) { ${artistSummary} }`;
+
+const artistQuery = `*[_type == "artist" && slug.current == $slug][0] { ${artistSummary}, story }`;
 
 const categoriesQuery = `*[_type == "category" && defined(slug.current)] | order(title asc) { ${categoryFields} }`;
 
@@ -58,3 +72,12 @@ export const getCategories = () =>
 
 export const getCategory = (slug: string) =>
   fetchCached<Category | null>(categoryQuery, { slug }, null);
+
+export const getProductsByArtist = (slug: string) =>
+  fetchCached<ProductSummary[]>(productsByArtistQuery, { slug }, []);
+
+export const getArtists = () =>
+  fetchCached<ArtistSummary[]>(artistsQuery, {}, []);
+
+export const getArtist = (slug: string) =>
+  fetchCached<Artist | null>(artistQuery, { slug }, null);

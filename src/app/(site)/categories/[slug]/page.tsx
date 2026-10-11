@@ -4,6 +4,7 @@ import { Suspense } from "react";
 
 import { ProductGrid } from "@/components/ProductGrid";
 import { absoluteUrl, baseOpenGraph } from "@/lib/site";
+import { staticSlugs } from "@/lib/static-params";
 import {
   getCategories,
   getCategory,
@@ -13,8 +14,7 @@ import {
 type Props = PageProps<"/categories/[slug]">;
 
 export async function generateStaticParams() {
-  const categories = await getCategories();
-  return categories.map((category) => ({ slug: category.slug }));
+  return staticSlugs(await getCategories());
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

@@ -2,7 +2,7 @@ import { PortableText, type PortableTextComponents } from "next-sanity";
 import { Image } from "next-sanity/image";
 
 import { urlFor } from "@/sanity/image";
-import type { DetailImage, Product } from "@/sanity/types";
+import type { DetailImage, RichTextValue } from "@/sanity/types";
 
 const components: PortableTextComponents = {
   block: {
@@ -69,11 +69,7 @@ const components: PortableTextComponents = {
   },
 };
 
-export function RichText({
-  value,
-}: {
-  value: NonNullable<Product["details"]>;
-}) {
+export function RichText({ value }: { value: RichTextValue }) {
   return (
     <div className="max-w-2xl [&>*:first-child]:mt-0">
       <PortableText value={value} components={components} />
