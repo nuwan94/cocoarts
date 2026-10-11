@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/* Palette taken from a cut coconut: frond, coconut water, kernel, shell, husk, king-coconut orange. */
+@theme inline {
+  --color-frond: #173d2c;
+  --color-water: #edf2e4;
+  --color-kernel: #fffdf8;
+  --color-shell: #3b2417;
+  --color-bark: #6b4a2f;
+  --color-husk: #b98a55;
+  --color-thambili: #ef7d1a;
+  --font-sans: var(--font-body);
+  --font-display: var(--font-carved);
+
+  --animate-ring-in: ring-in 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes ring-in {
+  from {
+    opacity: 0;
+    scale: 0.7;
+  }
+}
+
+@utility wrap {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1.25rem;
+}
+
+body {
+  background: var(--color-water);
+  color: var(--color-shell);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-thambili);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
