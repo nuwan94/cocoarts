@@ -3,7 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  # Rebuild every hour so products published in Sanity reach the site.
+  # A Sanity webhook calls this when content is published, so it goes live in minutes.
+  repository_dispatch:
+    types: [sanity-publish]
+  # Fallback only: GitHub often delays or skips scheduled runs.
   schedule:
     - cron: "17 * * * *"
   workflow_dispatch:
