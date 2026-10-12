@@ -73,29 +73,31 @@ export function PalaPeti({ className = "" }: { className?: string }) {
   );
 }
 
-/** A full ring of lotus petals, drawn in a 200×200 box. */
-export function LotusRing({
+/** A full ring of lotus petals, as an SVG group to place inside another drawing. */
+export function LotusPetals({
+  cx,
+  cy,
   inner,
   outer,
   count,
-  className = "",
 }: {
+  cx: number;
+  cy: number;
   inner: number;
   outer: number;
   count: number;
-  className?: string;
 }) {
   return (
-    <svg aria-hidden viewBox="0 0 200 200" className={className}>
-      {petalPaths(100, 100, inner, outer, count).map((d) => (
+    <g>
+      {petalPaths(cx, cy, inner, outer, count).map((d) => (
         <path
           key={d}
           d={d}
           className="fill-thambili/15 stroke-husk"
-          strokeWidth="1"
+          strokeWidth="0.8"
         />
       ))}
-    </svg>
+    </g>
   );
 }
 
