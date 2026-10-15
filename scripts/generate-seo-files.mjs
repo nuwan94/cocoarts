@@ -60,6 +60,7 @@ ${pages
 const robots = `User-agent: *
 Allow: /
 Disallow: ${new URL(siteUrl).pathname.replace(/\/$/, "")}/studio/
+Disallow: ${new URL(siteUrl).pathname.replace(/\/$/, "")}/basket/
 
 Sitemap: ${siteUrl}/sitemap.xml
 `;

@@ -4,8 +4,14 @@ import { notFound } from "next/navigation";
 import { Image } from "next-sanity/image";
 import { Suspense } from "react";
 
+import { AddToBasket } from "@/components/AddToBasket";
 import { RichText } from "@/components/RichText";
-import { currency, formatPrice, whatsappOrderUrl } from "@/lib/format";
+import {
+  canOrder,
+  currency,
+  formatPrice,
+  whatsappOrderUrl,
+} from "@/lib/format";
 import { absoluteUrl, baseOpenGraph, siteName } from "@/lib/site";
 import { staticSlugs } from "@/lib/static-params";
 import type { Product } from "@/sanity/types";
@@ -189,15 +195,29 @@ async function ProductDetails({ params }: Pick<Props, "params">) {
         <div className="mt-10">
           {!product.inStock ? (
             <p className="font-display text-2xl text-bark">Sold out</p>
-          ) : orderUrl ? (
-            <a
-              href={orderUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block rounded-full bg-thambili px-8 py-4 text-lg font-semibold text-shell hover:bg-frond hover:text-kernel"
-            >
-              Order via WhatsApp
-            </a>
+          ) : canOrder ? (
+            <>
+              <AddToBasket
+                item={{
+                  slug: product.slug,
+                  name: product.name,
+                  price: product.price,
+                  image: mainImage
+                    ? urlFor(mainImage).width(192).height(192).url()
+                    : undefined,
+                }}
+              />
+              {orderUrl && (
+                <a
+                  href={orderUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-block text-bark underline underline-offset-4 hover:text-shell"
+                >
+                  Or order just this piece on WhatsApp
+                </a>
+              )}
+            </>
           ) : (
             <p className="text-sm text-bark">
               Set NEXT_PUBLIC_WHATSAPP_NUMBER in .env.local to enable ordering.

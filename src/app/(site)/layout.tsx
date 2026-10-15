@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { BasketLink } from "@/components/BasketLink";
 import { Moonstone, PalaPeti } from "@/components/Motifs";
 import { SetupNotice } from "@/components/SetupNotice";
 import { isSanityConfigured } from "@/sanity/env";
@@ -9,10 +10,10 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
     <>
       <header className="bg-frond text-kernel">
         <div className="wrap flex items-center justify-between py-5">
-          <Link href="/" className="font-display text-3xl">
+          <Link href="/" className="font-display text-2xl sm:text-3xl">
             CocoArts
           </Link>
-          <nav className="flex gap-4 font-medium sm:gap-6">
+          <nav className="flex items-center gap-4 font-medium sm:gap-6">
             <Link
               href="/products"
               className="decoration-thambili decoration-wavy underline-offset-8 hover:underline"
@@ -27,10 +28,11 @@ export default function SiteLayout({ children }: LayoutProps<"/">) {
             </Link>
             <Link
               href="/#categories"
-              className="decoration-thambili decoration-wavy underline-offset-8 hover:underline"
+              className="hidden decoration-thambili decoration-wavy underline-offset-8 hover:underline sm:inline"
             >
               Categories
             </Link>
+            <BasketLink />
           </nav>
         </div>
       </header>
